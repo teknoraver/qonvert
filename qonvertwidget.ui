@@ -1,0 +1,336 @@
+<ui version="4.0" >
+ <author>Matteo Croce</author>
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>365</width>
+    <height>273</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Qonvert</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="qonvert.qrc" >:/images/qonvert.png</iconset>
+  </property>
+  <property name="windowIconText" >
+   <string/>
+  </property>
+  <property name="iconSize" >
+   <size>
+    <width>16</width>
+    <height>16</height>
+   </size>
+  </property>
+  <widget class="QWidget" name="centralWidget" >
+   <widget class="QGroupBox" name="groupBox" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>341</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="title" >
+     <string>Input</string>
+    </property>
+    <widget class="QPushButton" name="browseIn" >
+     <property name="geometry" >
+      <rect>
+       <x>310</x>
+       <y>50</y>
+       <width>21</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="text" >
+      <string/>
+     </property>
+     <property name="icon" >
+      <iconset resource="qonvert.qrc" >:/images/fileopen.png</iconset>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="fileRB" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text" >
+      <string>File</string>
+     </property>
+     <property name="icon" >
+      <iconset resource="qonvert.qrc" >:/images/file.png</iconset>
+     </property>
+     <property name="checked" >
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="dvdRB" >
+     <property name="geometry" >
+      <rect>
+       <x>100</x>
+       <y>20</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text" >
+      <string>DVD</string>
+     </property>
+     <property name="icon" >
+      <iconset resource="qonvert.qrc" >:/images/dvd.png</iconset>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="inName" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>291</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text" >
+      <string/>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_2" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>341</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="title" >
+     <string>Output</string>
+    </property>
+    <widget class="QPushButton" name="browseOut" >
+     <property name="geometry" >
+      <rect>
+       <x>310</x>
+       <y>20</y>
+       <width>21</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="text" >
+      <string/>
+     </property>
+     <property name="icon" >
+      <iconset resource="qonvert.qrc" >:/images/fileopen.png</iconset>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="outName" >
+     <property name="geometry" >
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>291</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text" >
+      <string/>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="convert" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>210</y>
+      <width>341</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Convert!</string>
+    </property>
+    <property name="icon" >
+     <iconset resource="qonvert.qrc" >:/images/qonvert.png</iconset>
+    </property>
+    <property name="autoDefault" >
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_4" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>140</y>
+      <width>341</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="title" >
+     <string>Encoding</string>
+    </property>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>9</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QCheckBox" name="audioCB" >
+       <property name="text" >
+        <string>Audio</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="qonvert.qrc" >:/images/audio.png</iconset>
+       </property>
+       <property name="checked" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="videoCB" >
+       <property name="text" >
+        <string>Video</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="qonvert.qrc" >:/images/video.png</iconset>
+       </property>
+       <property name="checked" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="cartoon" >
+       <property name="text" >
+        <string>Cartoon</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>365</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>File</string>
+    </property>
+    <addaction name="actionExit" />
+   </widget>
+   <widget class="QMenu" name="menu" >
+    <property name="title" >
+     <string>?</string>
+    </property>
+    <addaction name="actionAbout" />
+   </widget>
+   <addaction name="menuFile" />
+   <addaction name="menu" />
+  </widget>
+  <action name="actionAbout" >
+   <property name="icon" >
+    <iconset/>
+   </property>
+   <property name="text" >
+    <string>About...</string>
+   </property>
+  </action>
+  <action name="actionExit" >
+   <property name="text" >
+    <string>Exit</string>
+   </property>
+  </action>
+ </widget>
+ <tabstops>
+  <tabstop>inName</tabstop>
+  <tabstop>browseIn</tabstop>
+  <tabstop>outName</tabstop>
+  <tabstop>browseOut</tabstop>
+  <tabstop>convert</tabstop>
+ </tabstops>
+ <resources>
+  <include location="qonvert.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>182</x>
+     <y>223</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>videoCB</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>audioCB</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>99</x>
+     <y>207</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>261</x>
+     <y>207</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>audioCB</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>videoCB</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>261</x>
+     <y>207</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>99</x>
+     <y>207</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>videoCB</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>cartoon</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>180</x>
+     <y>207</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>288</x>
+     <y>207</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
