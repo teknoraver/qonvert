@@ -22,4 +22,4 @@ cmake --build build
 
 Copyright (C) 2007 Matteo Croce
 
-Qonvert is released under the GNU General Public License version 2 or later, see [COPYRIGHT](COPYRIGHT).
+Qonvert is released under the GNU General Public License version 3 or later, see [COPYING](COPYING).
