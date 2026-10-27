@@ -18,20 +18,18 @@
  ****************************************************************************/
 
 #include <QApplication>
-#include <QMainWindow>
+#include <QStyle>
 
-#include <QPlastiqueStyle>
-#include <QDesktopWidget>
 #include "qonvert.h"
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	QApplication::setStyle(new QPlastiqueStyle());
+	// Plastique is gone, Fusion is its successor
+	QApplication::setStyle("Fusion");
 	QApplication::setPalette(QApplication::style()->standardPalette());
 	Qonvert q;
-	q.move((QApplication::desktop()->screenGeometry(&q).width() - q.width()) / 2, (QApplication::desktop()->screenGeometry(&q).height() - q.height()) / 2);
-	q.setVisible(true);
-	QObject::connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
+	q.show();
+	QObject::connect(&a, &QGuiApplication::lastWindowClosed, &a, &QCoreApplication::quit);
 	return a.exec();
 }

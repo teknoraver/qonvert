@@ -19,25 +19,24 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QDesktopWidget>
 
 #include "qonvert.h"
 #include "progress.h"
 
-Qonvert::Qonvert() : QMainWindow(0)
+Qonvert::Qonvert() : QMainWindow(nullptr)
 {
 	setupUi(this);
-	connect(actionAbout, SIGNAL(triggered()), SLOT(about()));
-	connect(browseIn, SIGNAL(clicked()), SLOT(browseInSlot()));
-	connect(browseOut, SIGNAL(clicked()), SLOT(browseOutSlot()));
-	connect(convert, SIGNAL(clicked()), SLOT(convertSlot()));
+	connect(actionAbout, &QAction::triggered, this, &Qonvert::about);
+	connect(browseIn, &QPushButton::clicked, this, &Qonvert::browseInSlot);
+	connect(browseOut, &QPushButton::clicked, this, &Qonvert::browseOutSlot);
+	connect(convert, &QPushButton::clicked, this, &Qonvert::convertSlot);
 	c1 = new QCompleter(inName);
 	c2 = new QCompleter(outName);
+	dirModel.setRootPath(QString());
 	c1->setModel(&dirModel);
 	c2->setModel(&dirModel);
 	inName->setCompleter(c1);
 	outName->setCompleter(c2);
-	move((QApplication::desktop()->screenGeometry(this).width() - width()) / 2, (QApplication::desktop()->screenGeometry(this).height() - height()) / 2);
 }
 
 Qonvert::~Qonvert()
@@ -83,8 +82,8 @@ void Qonvert::convertSlot()
 	progress->video = videoCB->isChecked();
 	progress->cartoon = cartoon->isChecked();
 
-	connect(progress, SIGNAL(rejected()), SLOT(show()));
-	connect(progress, SIGNAL(accepted()), SLOT(show()));
+	connect(progress, &QDialog::rejected, this, &QWidget::show);
+	connect(progress, &QDialog::accepted, this, &QWidget::show);
 	progress->run();
 }
 

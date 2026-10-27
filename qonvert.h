@@ -22,7 +22,7 @@
 
 #include <QMainWindow>
 #include <QCompleter>
-#include <QDirModel>
+#include <QFileSystemModel>
 #include <QThread>
 #include <QProcess>
 
@@ -34,7 +34,7 @@ class Qonvert: public QMainWindow, private Ui::MainWindow
 
 public:
 	Qonvert();
-	~Qonvert();
+	~Qonvert() override;
 
 private slots:
 	void about();
@@ -44,7 +44,7 @@ private slots:
 
 private:
 	QCompleter *c1, *c2;
-	QDirModel dirModel;
+	QFileSystemModel dirModel;
 };
 
 #endif

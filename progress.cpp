@@ -19,9 +19,8 @@
 
 #include <QMessageBox>
 #include <QListWidgetItem>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QDir>
-#include <QDesktopWidget>
 
 #ifdef WIN32
 #include <windows.h>
@@ -38,7 +37,6 @@ ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent, Qt::Window), d
 {
 	setupUi(this);
 	setAttribute(Qt::WA_DeleteOnClose);
-	move((QApplication::desktop()->screenGeometry(this).width() - width()) / 2, (QApplication::desktop()->screenGeometry(this).height() - height()) / 2);
 }
 
 ProgressDialog::~ProgressDialog()
@@ -79,7 +77,7 @@ void ProgressDialog::updatePercent(int p)
 		totalp->setValue(newtotalp);
 }
 
-void ProgressDialog::jobFailed(QProcess::ProcessError e)
+void ProgressDialog::jobFailed(QProcess::ProcessError)
 {
 //	qDebug("ProgressDialog::jobFailed(%d)", e);
 	error();
@@ -95,10 +93,10 @@ void ProgressDialog::error()
 
 void ProgressDialog::addjob(Job *job)
 {
-	connect(job, SIGNAL(gotPercent(int)), SLOT(updatePercent(int)));
-	connect(job, SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(jobDone(int, QProcess::ExitStatus)));
-	connect(job, SIGNAL(error(QProcess::ProcessError)), SLOT(jobFailed(QProcess::ProcessError)));
-	connect(job, SIGNAL(started()), SLOT(jobStarted()));
+	connect(job, &Job::gotPercent, this, &ProgressDialog::updatePercent);
+	connect(job, &QProcess::finished, this, &ProgressDialog::jobDone);
+	connect(job, &QProcess::errorOccurred, this, &ProgressDialog::jobFailed);
+	connect(job, &QProcess::started, this, &ProgressDialog::jobStarted);
 	joblist << job;
 }
 
@@ -187,50 +185,54 @@ void Job::run()
 	emit gotPercent(0);
 
 	qDebug("%s", qPrintable(args));
+	QStringList argv = QProcess::splitCommand(args);
+	QString program = argv.takeFirst();
 	if(outputchannel == StandardOutput) {
-		connect(this, SIGNAL(readyReadStandardOutput()), SLOT(readStatus()));
-		start(args, ReadOnly);
+		connect(this, &QProcess::readyReadStandardOutput, this, &Job::readStatus);
+		start(program, argv, ReadOnly);
 		setReadChannel(StandardOutput);
 		closeReadChannel(StandardError);
 	} else {
-		connect(this, SIGNAL(readyReadStandardError()), SLOT(readStatus()));
-		start(args, ReadOnly);
+		connect(this, &QProcess::readyReadStandardError, this, &Job::readStatus);
+		start(program, argv, ReadOnly);
 		closeReadChannel(StandardOutput);
 		setReadChannel(StandardError);
 	}
 	closeWriteChannel();
 }
 
+// the first group captured by re in s, or a null string
+static QString capture(const QString &s, const char *re)
+{
+	QRegularExpressionMatch m = QRegularExpression(re).match(s);
+	return m.hasMatch() ? m.captured(1) : QString();
+}
+
 void JobAnalyse::readStatus()
 {
 	QString outputline(readAll());
-	QRegExp exp("ID_AUDIO");
-	if(exp.indexIn(outputline) != -1)
+	QString v;
+	if(outputline.contains("ID_AUDIO"))
 		info.audio = true;
-	exp = QRegExp("ID_VIDEO");
-	if(exp.indexIn(outputline) != -1)
+	if(outputline.contains("ID_VIDEO"))
 		info.video = true;
-	exp = QRegExp("ID_LENGTH=(\\d+)");
-	if(exp.indexIn(outputline) != -1)
-		info.duration = exp.cap(1).toInt();
-	exp = QRegExp("ID_VIDEO_WIDTH=(\\d+)");
-	if(exp.indexIn(outputline) != -1)
-		info.resx = exp.cap(1).toInt();
-	exp = QRegExp("ID_VIDEO_HEIGHT=(\\d+)");
-	if(exp.indexIn(outputline) != -1)
-		info.resy = exp.cap(1).toInt();
-	exp = QRegExp("ID_VIDEO_FPS=(\\d+\\.\\d+)");
-	if(exp.indexIn(outputline) != -1)
-		info.fps = exp.cap(1).toFloat();
+	if(!(v = capture(outputline, "ID_LENGTH=(\\d+)")).isNull())
+		info.duration = v.toInt();
+	if(!(v = capture(outputline, "ID_VIDEO_WIDTH=(\\d+)")).isNull())
+		info.resx = v.toInt();
+	if(!(v = capture(outputline, "ID_VIDEO_HEIGHT=(\\d+)")).isNull())
+		info.resy = v.toInt();
+	if(!(v = capture(outputline, "ID_VIDEO_FPS=(\\d+\\.\\d+)")).isNull())
+		info.fps = v.toFloat();
 	emit gotPercent(100);
 }
 
 void JobAudioRip::readStatus()
 {
 	QString outputline(readAll());
-	QRegExp reg("A: *(\\d+)");
-	if(reg.indexIn(outputline) != -1) {
-		int newpercent = reg.cap(1).toInt() * 100 / info.duration;
+	QString v = capture(outputline, "A: *(\\d+)");
+	if(!v.isNull()) {
+		int newpercent = v.toInt() * 100 / info.duration;
 		if(percent != newpercent)
 			emit gotPercent(percent = newpercent);
 	}
@@ -241,9 +243,9 @@ void JobAudioNorm::readStatus()
 	QString outputline(readAll());
 	if(outputline.contains("Applying adjustment"))
 		adj = true;
-	QRegExp reg("(\\d+)%");
-	if(reg.indexIn(outputline) != -1) {
-		int newpercent = reg.cap(1).toInt() / 3;
+	QString v = capture(outputline, "(\\d+)%");
+	if(!v.isNull()) {
+		int newpercent = v.toInt() / 3;
 		if(adj)
 			newpercent = newpercent * 2 + 33;
 		if(percent != newpercent)
@@ -254,9 +256,9 @@ void JobAudioNorm::readStatus()
 void JobAudioEnc::readStatus()
 {
 	QString outputline(readAll());
-	QRegExp reg("\\[(\\d+)%\\]");
-	if(reg.indexIn(outputline) != -1) {
-		int newpercent = reg.cap(1).toInt();
+	QString v = capture(outputline, "\\[(\\d+)%\\]");
+	if(!v.isNull()) {
+		int newpercent = v.toInt();
 		if(percent != newpercent)
 			emit gotPercent(percent = newpercent);
 	}
@@ -265,9 +267,9 @@ void JobAudioEnc::readStatus()
 void JobVideoEnc::readStatus()
 {
 	QString outputline(readAll());
-	QRegExp reg("\\(( ?\\d+)%\\)");
-	if(reg.indexIn(outputline) != -1) {
-		int newpercent = reg.cap(1).toInt();
+	QString v = capture(outputline, "\\(( ?\\d+)%\\)");
+	if(!v.isNull()) {
+		int newpercent = v.toInt();
 		if(percent != newpercent)
 			emit gotPercent(percent = newpercent);
 	}

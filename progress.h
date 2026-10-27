@@ -22,7 +22,7 @@
 
 #include <QProcess>
 #include <QDir>
-#include <QLinkedList>
+#include <QList>
 
 #include "ui_progresswidget.h"
 
@@ -40,7 +40,7 @@ class Job: public QProcess
 {
 	Q_OBJECT
 	public:
-		Job(const QString &t, const QString &a, FileInfo &fi, QObject *parent = 0, ProcessChannel o = StandardOutput): QProcess(parent), title(t), percent(0), args(a), info(fi), outputchannel(o) {};
+		Job(const QString &t, const QString &a, FileInfo &fi, QObject *parent = nullptr, ProcessChannel o = StandardOutput): QProcess(parent), title(t), percent(0), args(a), info(fi), outputchannel(o) {};
 		QString title;
 		void run();
 
@@ -63,7 +63,7 @@ class ProgressDialog: public QDialog, private Ui::ProgressDialog
 
 	public:
 		ProgressDialog(QWidget*);
-		~ProgressDialog();
+		~ProgressDialog() override;
 		QString infile, outfile;
 		void run();
 		bool dvdrip, norm, audio, video, cartoon;
@@ -79,7 +79,7 @@ class ProgressDialog: public QDialog, private Ui::ProgressDialog
 		int percentt, steps, step;
 		QIcon converting, doneico;
 		QDir workdir;
-		QLinkedList<Job*> joblist;
+		QList<Job*> joblist;
 		Job *currentjob;
 
 		void addjob(Job*);
@@ -91,27 +91,27 @@ class JobAnalyse: public Job
 {
 	Q_OBJECT
 	public:
-		JobAnalyse(const QString &t, const QString &a, FileInfo &fi, QObject *parent = 0, ProcessChannel o = StandardOutput):
+		JobAnalyse(const QString &t, const QString &a, FileInfo &fi, QObject *parent = nullptr, ProcessChannel o = StandardOutput):
 			Job(t, a, fi, parent, o) {};
-		void readStatus();
+		void readStatus() override;
 };
 
 class JobAudioRip: public Job
 {
 	Q_OBJECT
 	public:
-		JobAudioRip(const QString &t, const QString &a, FileInfo &fi, QObject *parent = 0, ProcessChannel o = StandardOutput):
+		JobAudioRip(const QString &t, const QString &a, FileInfo &fi, QObject *parent = nullptr, ProcessChannel o = StandardOutput):
 			Job(t, a, fi, parent, o) {};
-		void readStatus();
+		void readStatus() override;
 };
 
 class JobAudioNorm: public Job
 {
 	Q_OBJECT
 	public:
-		JobAudioNorm(const QString &t, const QString &a, FileInfo &fi, QObject *parent = 0, ProcessChannel o = StandardOutput):
+		JobAudioNorm(const QString &t, const QString &a, FileInfo &fi, QObject *parent = nullptr, ProcessChannel o = StandardOutput):
 			Job(t, a, fi, parent, o) {};
-		void readStatus();
+		void readStatus() override;
 
 	private:
 		bool adj;
@@ -121,27 +121,27 @@ class JobAudioEnc: public Job
 {
 	Q_OBJECT
 	public:
-		JobAudioEnc(const QString &t, const QString &a, FileInfo &fi, QObject *parent = 0, ProcessChannel o = StandardOutput):
+		JobAudioEnc(const QString &t, const QString &a, FileInfo &fi, QObject *parent = nullptr, ProcessChannel o = StandardOutput):
 			Job(t, a, fi, parent, o) {};
-		void readStatus();
+		void readStatus() override;
 };
 
 class JobVideoEnc: public Job
 {
 	Q_OBJECT
 	public:
-		JobVideoEnc(const QString &t, const QString &a, FileInfo &fi, QObject *parent = 0, ProcessChannel o = StandardOutput):
+		JobVideoEnc(const QString &t, const QString &a, FileInfo &fi, QObject *parent = nullptr, ProcessChannel o = StandardOutput):
 			Job(t, a, fi, parent, o) {};
-		void readStatus();
+		void readStatus() override;
 };
 
 class JobMux: public Job
 {
 	Q_OBJECT
 	public:
-		JobMux(const QString &t, const QString &a, FileInfo &fi, QObject *parent = 0, ProcessChannel o = StandardOutput):
+		JobMux(const QString &t, const QString &a, FileInfo &fi, QObject *parent = nullptr, ProcessChannel o = StandardOutput):
 			Job(t, a, fi, parent, o), steps(2 + (info.audio && info.video)) {};
-		void readStatus();
+		void readStatus() override;
 	private:
 		int steps;
 };
